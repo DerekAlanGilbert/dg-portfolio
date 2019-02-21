@@ -10,8 +10,9 @@ export default class PortfolioManager extends Component {
     this.state = {
       portfolioItems: []
     }
-    this.handleSuccessfulFormSubmission = this.handleSuccessfulFormSubmission.bind(this)
-    this.handleFormSubmissionError = this.handleFormSubmissionError.bind(this)
+    this.handleSuccessfulFormSubmission = this.handleSuccessfulFormSubmission.bind(this);
+    this.handleFormSubmissionError = this.handleFormSubmissionError.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
   
   handleSuccessfulFormSubmission(portfolioItem) {
@@ -23,17 +24,28 @@ export default class PortfolioManager extends Component {
   handleFormSubmissionError (error) {
     console.log("ERROR::handleFormSubmissionError", error)
   }
-
+  
   getPortfolioItems () {
-  axios.get('https://derekgilbert.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc')
+    axios.get('https://derekgilbert.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc')
     .then( response => {
       this.setState({ portfolioItems: [...response.data.portfolio_items]})
-      console.log(response.data)
-      })
+    })
     .catch( error => {
-        console.log('ERROR::getPortfolioItems ', error)
-      })
-    }
+      console.log('ERROR::getPortfolioItems ', error)
+    })
+  }
+  
+  handleDeleteClick (portfolioItem) {
+    axios.delete(`https://derekgilbert.devcamp.space/portfolio/portfolio_items/${portfolioItem.id}`, { withCredentials: true})
+    .then(response => {
+      this.setState({ portfolioItems: this.state.portfolioItems.filter(item => { return item.id !== portfolioItem.id })})
+
+      console.log(response)
+    })
+    .catch( error => {
+      console.log('ERROR::handleDeleteClick', error)
+    })
+  }
   // lifecycyle
   componentDidMount(){
     this.getPortfolioItems()
@@ -47,7 +59,7 @@ export default class PortfolioManager extends Component {
             handleFormSubmissionError={this.handleFormSubmissionError}/>
         </div>
         <div className="right-column">
-          <PortfolioSideBarList data={this.state.portfolioItems}/>
+          <PortfolioSideBarList data={this.state.portfolioItems} handleDeleteClick={this.handleDeleteClick}/>
         </div>
       </div>
     );
