@@ -6,11 +6,24 @@
   .left-side{
     display: flex;
   }
+  
+  .right-side {
+    a {
+      margin-left: 5px;
+      cursor: pointer;
+      color: $teal;
+      transition: 0.5s ease-in-out;
+      &:hover{
+        color: $dark-teal;
+      }
+    }
+  }
 
   .nav-link-wrapper {
     height: 22px;
     border-bottom: 1px solid transparent;
-   margin-right: 20px;
+    margin-right: 20px;
+    transition: 0.5s ease-in-out;
     text-transform: uppercase;
     font-size: 0.9rem;
 
@@ -29,7 +42,7 @@
     
     .nav-link-active {
       border-bottom: 1px solid black;
-        color: black;
+       color: black;
     }
   }
 }

@@ -8,13 +8,24 @@
     .portfolio-thumg-img img {
       width: 100%;
     }
-    .title {
-      color: $offwhite;
-    }
-    
-    .delete-item {
-      color: $teal;
-      cursor: pointer;
+
+    .portfolio-action-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .title {
+        color: $offwhite;
+        font-size: 1.2em;
+      }
+      .delete-icon {
+        font-size: 1.2em;
+        transition: 0.5s ease-in-out;
+        color: $offwhite;
+        cursor: pointer;
+        &:hover {
+          color: $warning;
+        }
+      }
     }
   }
 }
