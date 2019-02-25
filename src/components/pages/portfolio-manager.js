@@ -8,23 +8,36 @@ export default class PortfolioManager extends Component {
     super();
 
     this.state = {
-      portfolioItems: []
+      portfolioItems: [],
+      portfolioToEdit: {}
     }
-    this.handleSuccessfulFormSubmission = this.handleSuccessfulFormSubmission.bind(this);
+    this.handleNewFormSubmission = this.handleNewFormSubmission.bind(this);
+    this.handleEditFormSubmission = this.handleEditFormSubmission.bind(this);
     this.handleFormSubmissionError = this.handleFormSubmissionError.bind(this);
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
+    this.clearPortfolioToEdit = this.clearPortfolioToEdit.bind(this);
   }
   
-  handleSuccessfulFormSubmission(portfolioItem) {
+  clearPortfolioToEdit () {
+    this.setState({
+      portfolioToEdit: {}
+    })
+  }
+  
+  handleNewFormSubmission(portfolioItem) {
     this.setState({
       portfolioItems: [portfolioItem].concat(this.state.portfolioItems)
     })
+  }
+  handleEditFormSubmission () {
+    this.getPortfolioItems();
   }
   
   handleFormSubmissionError (error) {
     console.log("ERROR::handleFormSubmissionError", error)
   }
-  
+  //get
   getPortfolioItems () {
     axios.get('https://derekgilbert.devcamp.space/portfolio/portfolio_items?order_by=created_at&direction=desc')
     .then( response => {
@@ -34,13 +47,15 @@ export default class PortfolioManager extends Component {
       console.log('ERROR::getPortfolioItems ', error)
     })
   }
-  
+  //edit
+  handleEditClick (portfolioItem){
+    this.setState({portfolioToEdit: portfolioItem})
+  }
+  //delete
   handleDeleteClick (portfolioItem) {
     axios.delete(`https://derekgilbert.devcamp.space/portfolio/portfolio_items/${portfolioItem.id}`, { withCredentials: true})
     .then(response => {
       this.setState({ portfolioItems: this.state.portfolioItems.filter(item => { return item.id !== portfolioItem.id })})
-
-      console.log(response)
     })
     .catch( error => {
       console.log('ERROR::handleDeleteClick', error)
@@ -55,11 +70,18 @@ export default class PortfolioManager extends Component {
       <div className="portfolio-manager-wrapper">
         <div className="left-column">
           <PortfolioForm 
-            handleSuccessfulFormSubmission={this.handleSuccessfulFormSubmission}
-            handleFormSubmissionError={this.handleFormSubmissionError}/>
+            portfolioToEdit={this.state.portfolioToEdit}
+            clearPortfolioToEdit={this.clearPortfolioToEdit}
+            handleNewFormSubmission={this.handleNewFormSubmission}
+            handleEditFormSubmission={this.handleEditFormSubmission}
+            handleFormSubmissionError={this.handleFormSubmissionError}
+            />
         </div>
         <div className="right-column">
-          <PortfolioSideBarList data={this.state.portfolioItems} handleDeleteClick={this.handleDeleteClick}/>
+          <PortfolioSideBarList 
+            data={this.state.portfolioItems} 
+            handleDeleteClick={this.handleDeleteClick} 
+            handleEditClick={this.handleEditClick}/>
         </div>
       </div>
     );

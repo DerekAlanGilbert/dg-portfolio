@@ -17,13 +17,18 @@
         color: $offwhite;
         font-size: 1.2em;
       }
-      .delete-icon {
-        font-size: 1.2em;
-        transition: 0.5s ease-in-out;
-        color: $offwhite;
-        cursor: pointer;
-        &:hover {
-          color: $warning;
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 15px;
+        .action-icon {
+          font-size: 1.2em;
+          transition: 0.5s ease-in-out;
+          color: $offwhite;
+          cursor: pointer;
+          &:hover {
+            color: $warning;
+          }
         }
       }
     }
