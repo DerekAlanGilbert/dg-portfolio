@@ -40,7 +40,14 @@ export default class PortfolioForm extends Component {
   }
   
   deleteImage (imageType) {
-    
+    axios
+    .delete(`https://api.devcamp.space/portfolio/delete-portfolio-image/${this.state.id}?image_type=${imageType}`, {withCredentials: true})
+    .then( res => {
+      this.setState({
+        [`${imageType}_url`]: ''
+      })
+     })
+    .catch(err=>{console.log('ERROR::deleteImage', err)})
   }
   
   componentDidUpdate(){
@@ -65,7 +72,6 @@ export default class PortfolioForm extends Component {
           description       : description || "", 
           category          : category || "eCommerce",
           position          : position || "",
-          logo              : '',
           url               : url || "",
           editMode          : true,
           apiUrl            : `https://derekgilbert.devcamp.space/portfolio/portfolio_items/${id}`,
@@ -125,11 +131,11 @@ export default class PortfolioForm extends Component {
     }
     
     if (this.state.banner_image) {
-      formData.append('portfolio_item[thumb_image]', this.state.banner_image)
+      formData.append('portfolio_item[banner_image]', this.state.banner_image)
     }
     
     if (this.state.logo) {
-      formData.append('portfolio_item[thumb_image]', this.state.logo)
+      formData.append('portfolio_item[logo]', this.state.logo)
     }
     
     return formData;
@@ -148,23 +154,24 @@ export default class PortfolioForm extends Component {
       data            : this.buildForm(),
       withCredentials : true,
     }).then(response => {
+      console.log(response)
       if (this.state.editMode) {
         this.props.handleEditFormSubmission();
       } else {
         this.props.handleNewFormSubmission(response.data.portfolio_item)
       }
         this.setState({
-          name: '',
-          description: '', 
-          category: 'eCommerce',
-          position: '',
-          url: '',
-          thumb_image: '',
-          banner_image: '',
-          logo: '',
-          editMode    : false,
-          apiUrl      : 'https://derekgilbert.devcamp.space/portfolio/portfolio_items',
-          apiAction   : 'post'
+          name: "",
+          description: "",
+          category: "eCommerce",
+          position: "",
+          url: "",
+          thumb_image: "",
+          banner_image: "",
+          logo: "",
+          editMode: false,
+          apiUrl: "https://derekgilbert.devcamp.space/portfolio/portfolio_items",
+          apiAction: "post"
           })
           
           
@@ -173,6 +180,7 @@ export default class PortfolioForm extends Component {
           })
         })
         .catch(error =>{
+          console.log(error)
           console.log('ERROR::PortfolioFormHandleSubmit', error)
         })
         
@@ -225,7 +233,7 @@ export default class PortfolioForm extends Component {
         <div className="image-uploaders">
         { this.state.thumb_image_url && this.state.editMode ? 
         <div className="portfolio-image-wrapper">
-          <img src={this.state.thumb_image}></img>
+          <img src={this.state.thumb_image_url}></img>
           <div className="image-removal-link">
             <a onClick={()=> this.deleteImage('thumb_image')}>Remove file</a>
           </div>
@@ -242,7 +250,7 @@ export default class PortfolioForm extends Component {
         
         { this.state.banner_image_url && this.state.editMode ? 
         <div className="portfolio-image-wrapper">
-          <img src={this.state.banner_image}></img>
+          <img src={this.state.banner_image_url}></img>
           <div className="image-removal-link">
             <a onClick={()=> this.deleteImage('banner_image')}>Remove file</a>
           </div>
@@ -259,7 +267,7 @@ export default class PortfolioForm extends Component {
             
         { this.state.logo_url && this.state.editMode ? 
         <div className="portfolio-image-wrapper logo-background">
-          <img src={this.state.logo}></img>
+          <img src={this.state.logo_url}></img>
           <div className="image-removal-link">
             <a onClick={()=> this.deleteImage('logo')}>Remove file</a>
           </div>
